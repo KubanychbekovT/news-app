@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:news_app/presentation/splash/splash.dart';
 
 void main() {
   runApp(const MyApp());
@@ -9,6 +10,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp();
+    return MaterialApp(
+      title: 'News App',
+      debugShowCheckedModeBanner: false,
+      initialRoute: '/splash',
+      routes: {
+        '/splash': (context) => const SplashScreen(),
+      },
+    );
   }
 }
