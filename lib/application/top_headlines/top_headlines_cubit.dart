@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:dio/dio.dart';
+import 'package:news_app/presentation/constants/constants.dart';
 
 part 'top_headlines_state.dart';
 part 'data_provider.dart';

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:news_app/application/top_headlines/top_headlines_cubit.dart';
 import 'package:news_app/domain/animations/bottom_animation.dart';
 import 'package:news_app/domain/models/news.dart';
@@ -8,10 +7,10 @@ import 'package:news_app/presentation/headlines/widgets/headlines_card.dart';
 import '../../infrastructure/configs/app.dart';
 import '../../infrastructure/configs/configs.dart';
 import '../../utils/app_utils.dart';
-import 'package:intl/intl.dart' show toBeginningOfSentenceCase;
+import 'package:intl/intl.dart';
 
-part '_category_tabs.dart';
-part '_category_button.dart';
+part 'widgets/_category_tabs.dart';
+part 'widgets/_category_button.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -24,11 +23,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     final newsCubit = BlocProvider.of<TopHeadlinesCubit>(context);
-    newsCubit.fetchNews();
-    super.initState();
+    if (newsCubit.state.data == null ||
+    newsCubit.state.data!.isEmpty) {
   }
+    super.initState();
 
-  @override
+    @override
   Widget build(BuildContext context) {
     App.init(context);
     return Scaffold(
@@ -56,7 +56,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     Space.y1!,
                     Text(
-                      "Monday, 17 may",
+                      DateFormat('EEEE, dd MMM').format(DateTime.now()),
                       style: AppText.l1!.copyWith(
                         color: Colors.grey,
                       ),

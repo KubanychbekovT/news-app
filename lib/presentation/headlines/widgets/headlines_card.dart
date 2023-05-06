@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/domain/models/news.dart';
+import 'package:news_app/infrastructure/configs/app.dart';
 import 'package:news_app/infrastructure/configs/app_typography.dart';
 import 'package:news_app/infrastructure/configs/space.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -70,20 +71,14 @@ class HeadlinesCard extends StatelessWidget {
                       height: 1.1,
                     ),
                   ),
-                  Space.y1!,
+                  Space.y!,
                   Row(
                     children: [
                       Text(
-                        news!.name,
+                        '${App.flag(news!.country)} ${news!.name}',
                         style: AppText.b2,
                       ),
                     ],
-                  ),
-                  Text(
-                    news!.country,
-                    style: AppText.l1!.copyWith(
-                      color: Colors.grey,
-                    ),
                   ),
                 ],
               ),
