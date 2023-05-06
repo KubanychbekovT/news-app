@@ -1,46 +1,127 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:news_app/application/top_headlines/top_headlines_cubit.dart';
+import 'package:news_app/domain/animations/bottom_animation.dart';
+import 'package:news_app/domain/models/news.dart';
+import 'package:news_app/presentation/headlines/widgets/headlines_card.dart';
+import '../../infrastructure/configs/app.dart';
 import '../../infrastructure/configs/configs.dart';
 import '../../utils/app_utils.dart';
 import 'package:intl/intl.dart' show toBeginningOfSentenceCase;
 
-class DashboardScreen extends StatelessWidget {
+part '_category_tabs.dart';
+part '_category_button.dart';
+
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return  Scaffold(
-      appBar: AppBar(
-        leading: SizedBox(),
-        leadingWidth: 0,
-        title: Text(
-          'Newsy',
-          style: AppText.h2b,
-        ),
-        actions: [
-          CircleAvatar(),
-          Space.x!,
-        ],
-      ),
-      body: Column(
-        children: [
-          SingleChildScrollView(
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
 
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: AppUtils.categories
-                  .map((e) => Padding(
-                  padding: Space.all(1, 1),
-                  child: Text(
-                    toBeginningOfSentenceCase(e)!,
-                  ),
+class _DashboardScreenState extends State<DashboardScreen> {
+  @override
+  void initState() {
+    final newsCubit = BlocProvider.of<TopHeadlinesCubit>(context);
+    newsCubit.fetchNews();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    App.init(context);
+    return Scaffold(
+        body: SafeArea(
+            child: SingleChildScrollView(
+      padding: Space.h1,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Space.y1!,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                flex: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Your breifing',
+                      style: AppText.h1b!.copyWith(
+                        fontSize: AppDimensions.normalize(13),
+                        height: 1.1,
+                      ),
+                    ),
+                    Space.y1!,
+                    Text(
+                      "Monday, 17 may",
+                      style: AppText.l1!.copyWith(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              )
-                    .toList(),
-            ),
+              Space.xm!,
+              Expanded(
+                child: CircleAvatar(
+                  maxRadius: AppDimensions.normalize(20),
+                ),
+              ),
+            ],
           ),
+          Space.y1!,
+          const _CategoryTabs(),
+          Space.y1!,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Top Stories',
+                style: AppText.h3b,
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.arrow_forward_ios,
+                  size: AppDimensions.normalize(7),
+                ),
+              ),
+            ],
+          ),
+          BlocBuilder<TopHeadlinesCubit, TopHeadlinesState>(
+              builder: (context, state) {
+                if (state is TopHeadlinesLoading) {
+                  return const LinearProgressIndicator();
+                } else if (state is TopHeadlinesFailure) {
+                  return Text(state.error!);
+                } else if (state is TopHeadlinesSuccess) {
+                  List<News> recentNews =
+                      List.generate(3, (index) => state.data![index]);
+                  return Column(
+                    children: recentNews
+                        .map((news) => BottomAnimator(
+                        child: HeadlinesCard(
+                          news: news,
+                        ),
+                    ),
+                    )
+                          .toList(),
+                  );
+                } else {
+                  return const Text('Something Went Wrong!');
+                }
+              },
+          ),
+          Space.y2!,
+          Text('Picks for you',
+          style: AppText.h3b,
+          ),
+          Space.y!,
         ],
       ),
-    );
+    )));
   }
 }
