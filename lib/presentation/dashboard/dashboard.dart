@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app/application/providers/category_provider.dart';
 import 'package:news_app/application/top_headlines/top_headlines_cubit.dart';
 import 'package:news_app/domain/animations/bottom_animation.dart';
 import 'package:news_app/domain/models/news.dart';
 import 'package:news_app/presentation/headlines/widgets/headlines_card.dart';
+import 'package:provider/provider.dart';
 import '../../infrastructure/configs/app.dart';
 import '../../infrastructure/configs/configs.dart';
 import '../../utils/app_utils.dart';
@@ -23,11 +25,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     final newsCubit = BlocProvider.of<TopHeadlinesCubit>(context);
+    final categoryProvider = Provider.of<CategoryProvider>(
+        context, listen: false);
+
     if (newsCubit.state.data == null ||
-    newsCubit.state.data!.isEmpty) {
+        newsCubit.state.data!.isEmpty) {
+
+    newsCubit.fetch(
+      AppUtils.categories[categoryProvider.categoryIndexGet],
+    );
   }
     super.initState();
-
+}
     @override
   Widget build(BuildContext context) {
     App.init(context);
@@ -83,7 +92,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 style: AppText.h3b,
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () => Navigator.pushNamed(context, '/top-stories',
+                arguments: {
+                  'title': AppUtils.categories[context.read<CategoryProvider>().categoryIndexGet],
+                }),
                 icon: Icon(
                   Icons.arrow_forward_ios,
                   size: AppDimensions.normalize(7),
@@ -99,7 +111,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   return Text(state.error!);
                 } else if (state is TopHeadlinesSuccess) {
                   List<News> recentNews =
-                      List.generate(3, (index) => state.data![index]);
+                      List.generate(state.data!.length >= 3 ? 3 :
+                      state.data!.length,
+                      (index) => state.data![index]!);
                   return Column(
                     children: recentNews
                         .map((news) => BottomAnimator(

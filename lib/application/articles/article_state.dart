@@ -2,7 +2,7 @@ part of 'article_cubit.dart';
 
 @immutable
 class ArticlesState extends Equatable {
-  final Article? data;
+  final List<Article>? data;
   final String? message;
 
   const ArticlesState({
@@ -24,10 +24,10 @@ class ArticlesFetchLoading extends ArticlesState {
 
  @immutable
 class ArticlesFetchSuccess extends ArticlesState {
-  const ArticlesFetchSuccess({Article? data}) : super(data: data);
+  const ArticlesFetchSuccess({List<Article>? data}) : super(data: data);
  }
 
  @immutable
-class ArticlesFetchFailded extends ArticlesState {
-  const ArticlesFetchFailded({String? message}): super(message: message);
+class ArticlesFetchFailed extends ArticlesState {
+  const ArticlesFetchFailed({String? message}): super(message: message);
  }
