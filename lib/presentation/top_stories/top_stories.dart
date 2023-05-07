@@ -4,8 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:news_app/application/top_headlines/top_headlines_cubit.dart';
 import 'package:news_app/domain/animations/bottom_animation.dart';
 import 'package:news_app/infrastructure/configs/space.dart';
-
-import '../headlines/widgets/headlines_card.dart';
+import '../widgets/headlines_card.dart';
 
 class TopStoriesScreen extends StatelessWidget {
   const TopStoriesScreen({Key? key}) : super(key: key);
@@ -32,7 +31,7 @@ class TopStoriesScreen extends StatelessWidget {
             children: newsCubit.state.data!
                 .map((e) => BottomAnimator(
                 child: HeadlinesCard(
-                  news: e,
+                  news: e!,
                 ),
             ),
             )

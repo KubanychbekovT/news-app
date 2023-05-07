@@ -9,21 +9,21 @@ part 'article_state.dart';
 part 'repository.dart';
 
 class ArticlesCubit extends Cubit<ArticlesState> {
-  static ArticlesCubit() cubit(BuildContext context, [bool listen = false]) =>
-      BlocProvider.of<ArticlesCubit(context, listen: listen);
+  static ArticlesCubit cubit(BuildContext context, [bool listen = false]) =>
+      BlocProvider.of<ArticlesCubit>(context, listen: listen);
 
   ArticlesCubit() : super(ArticlesDefault());
 
   final repo = ArticlesRepository();
 
-  Future<void> fetch(String keyword) async {
+  Future<void> fetch({String? keyword}) async {
     emit(const ArticlesFetchLoading());
     try {
-      final data = await repo.fetch(keyword);
+      final data = await repo.fetch(keyword: keyword);
 
       emit(ArticlesFetchSuccess(data: data));
     } catch (e) {
-      emit(ArticlesFetchFailded(message: e.toString()));
+      emit(ArticlesFetchFailed(message: e.toString()));
     }
   }
 }
