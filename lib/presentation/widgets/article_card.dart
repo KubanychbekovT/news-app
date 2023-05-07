@@ -20,7 +20,8 @@ class ArticleCard extends StatelessWidget {
       padding: Space.all(0.5, 1),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(AppDimensions.normalize(3),
+        borderRadius: BorderRadius.circular(
+          AppDimensions.normalize(3),
         ),
         boxShadow: const [
           BoxShadow(
@@ -38,40 +39,51 @@ class ArticleCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: AppDimensions.normalize(35),
-              height: AppDimensions.normalize(35),
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(
-                  AppDimensions.normalize(3),
-                )
-              ),
-              child: Center(
-                child: Text(
-                  article.title!.substring(0, 1),
-                  style: AppText.h1b!.copyWith(
-                    color: Colors.grey,
+            Column(
+              children: [
+                Container(
+                  width: AppDimensions.normalize(35),
+                  height: AppDimensions.normalize(35),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(
+                      AppDimensions.normalize(3),
+                    ),
                   ),
                 ),
-              ),
+                Text(
+                  article.publishedAt!,
+                  style: AppText.b2,
+                ),
+              ],
             ),
             Space.x1!,
             Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      article.description!.length > 50
-                          ? '${article.description!.substring(0, 50)}...'
-                          : article.description!,
-                      style: AppText.h3b!.copyWith(
-                        height: 1.1,
-                      ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    article.title!.length > 50
+                        ? '${article.description!.substring(0, 50)}...'
+                        : article.description!,
+                    style: AppText.h3b!.copyWith(
+                      height: 1.1,
                     ),
-                    Space.y!,
-                  ],
-                ))
+                  ),
+                  Space.y!,
+                  Text(
+                    'Name',
+                    style: AppText.b2,
+                  ),
+                  Space.y!,
+                  Text(
+                    article.description!.length > 50
+                        ? '${article.description!.substring(0, 50)}...'
+                        : article.description!,
+                  )
+                ],
+              ),
+            ),
           ],
         ),
       ),

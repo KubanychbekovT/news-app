@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app/application/articles/article_cubit.dart';
 import 'package:news_app/application/providers/category_provider.dart';
 import 'package:news_app/application/top_headlines/top_headlines_cubit.dart';
 import 'package:news_app/domain/animations/bottom_animation.dart';
 import 'package:news_app/domain/models/news.dart';
+import 'package:news_app/presentation/widgets/article_card.dart';
 import 'package:provider/provider.dart';
+import '../../domain/models/article/article.dart';
 import '../../infrastructure/configs/app.dart';
 import '../../infrastructure/configs/configs.dart';
 import '../../utils/app_utils.dart';
@@ -27,19 +30,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     final newsCubit = BlocProvider.of<TopHeadlinesCubit>(context);
-    final categoryProvider = Provider.of<CategoryProvider>(
-        context, listen: false);
+    final articleCubit = BlocProvider.of<ArticlesCubit>(context);
+    final categoryProvider =
+        Provider.of<CategoryProvider>(context, listen: false);
 
-    if (newsCubit.state.data == null ||
-        newsCubit.state.data!.isEmpty) {
-
-    newsCubit.fetch(
-      AppUtils.categories[categoryProvider.categoryIndexGet],
-    );
-  }
+    if (newsCubit.state.data == null || newsCubit.state.data!.isEmpty) {
+      newsCubit.fetch(
+        AppUtils.categories[categoryProvider.categoryIndexGet],
+      );
+    }
+    if (articleCubit.state.data == null || articleCubit.state.data!.isEmpty) {
+      articleCubit.fetch(keyword: 'latest');
+    }
     super.initState();
-}
-    @override
+  }
+
+  @override
   Widget build(BuildContext context) {
     App.init(context);
     return Scaffold(
@@ -94,9 +100,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 style: AppText.h3b,
               ),
               IconButton(
-                onPressed: () => Navigator.pushNamed(context, '/top-stories',
-                arguments: {
-                  'title': AppUtils.categories[context.read<CategoryProvider>().categoryIndexGet],
+                onPressed: () =>
+                    Navigator.pushNamed(context, '/top-stories', arguments: {
+                  'title': AppUtils.categories[
+                      context.read<CategoryProvider>().categoryIndexGet],
                 }),
                 icon: Icon(
                   Icons.arrow_forward_ios,
@@ -106,34 +113,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ],
           ),
           BlocBuilder<TopHeadlinesCubit, TopHeadlinesState>(
-              builder: (context, state) {
-                if (state is TopHeadlinesLoading) {
-                  return const LinearProgressIndicator();
-                } else if (state is TopHeadlinesFailure) {
-                  return Text(state.error!);
-                } else if (state is TopHeadlinesSuccess) {
-                  List<News> recentNews =
-                      List.generate(state.data!.length >= 3 ? 3 :
-                      state.data!.length,
-                      (index) => state.data![index]!);
-                  return Column(
-                    children: recentNews
-                        .map((news) => BottomAnimator(
-                        child: HeadlinesCard(
-                          news: news,
+            builder: (context, state) {
+              if (state is TopHeadlinesLoading) {
+                return const LinearProgressIndicator();
+              } else if (state is TopHeadlinesFailure) {
+                return Text(state.error!);
+              } else if (state is TopHeadlinesSuccess) {
+                List<News> recentNews = List.generate(
+                    state.data!.length >= 3 ? 3 : state.data!.length,
+                    (index) => state.data![index]!);
+                return Column(
+                  children: recentNews
+                      .map(
+                        (news) => BottomAnimator(
+                          child: HeadlinesCard(
+                            news: news,
+                          ),
                         ),
-                    ),
-                    )
-                          .toList(),
-                  );
-                } else {
-                  return const Text('Something Went Wrong!');
-                }
-              },
+                      )
+                      .toList(),
+                );
+              } else {
+                return const Text('Something Went Wrong!');
+              }
+            },
           ),
           Space.y2!,
-          Text('Picks for you',
-          style: AppText.h3b,
+          Text(
+            'Picks for you',
+            style: AppText.h3b,
           ),
           Space.y!,
           const CustomTextField(
@@ -142,6 +150,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
             textInputType: TextInputType.text,
           ),
           Space.y1!,
+          BlocBuilder<ArticlesCubit, ArticlesState>(
+            builder: (context, state) {
+              if (state is TopHeadlinesLoading) {
+                return LinearProgressIndicator();
+              } else if (state is TopHeadlinesFailure) {
+                return Text(state.message!);
+              } else if (state is TopHeadlinesSuccess) {
+                List<Article> recentNews = List.generate(
+                    state.data!.length, (index) => state.data![index]);
+                return Column(
+                  children: recentNews
+                      .map((article) => BottomAnimator(
+                              child: ArticleCard(
+                            article: article,
+                          )))
+                      .toList(),
+                );
+              } else {
+                return Center(
+                  child: Text('Something Went Wrong!'),
+                );
+              }
+            },
+          )
         ],
       ),
     )));
