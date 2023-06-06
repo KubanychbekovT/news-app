@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../../domain/models/article/article.dart';
+import '../../presentation/constants/constants.dart';
 
 
 part 'data_provider.dart';
@@ -22,17 +23,19 @@ class ArticlesCubit extends Cubit<ArticlesState> {
   Future<void> fetch({String? keyword}) async {
     emit(const ArticlesFetchLoading());
     try {
+      keyword ??= 'lateset';
+
       Duration? difference;
       final currentTime = DateTime.now();
       List<Article>? data = [];
 
-      data = await repo.fetchHive(keyword!);
+      data = await repo.fetchHive(keyword);
       DateTime? articlesTime = Hive.box('app').get('articlesTime');
       if (articlesTime != null) {
         difference = currentTime.difference(articlesTime);
       }
       if (data == null || (difference != null && difference.inHours > 1)) {
-        data = await repo.fetchApi(keyword: keyword);
+        data = await repo.fetchApi(keyword);
       }
       emit(ArticlesFetchSuccess(data: data));
     } catch (e) {

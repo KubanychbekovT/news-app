@@ -5,7 +5,7 @@ import 'package:news_app/infrastructure/configs/app.dart';
 import 'package:news_app/infrastructure/configs/app_dimensions.dart';
 import 'package:news_app/infrastructure/configs/app_typography.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:intl/intl.dart';
 import '../../infrastructure/configs/space.dart';
 
 class ArticleCard extends StatelessWidget {
@@ -42,17 +42,27 @@ class ArticleCard extends StatelessWidget {
             Column(
               children: [
                 Container(
-                  width: AppDimensions.normalize(35),
-                  height: AppDimensions.normalize(35),
+                  width: AppDimensions.normalize(45),
+                  height: AppDimensions.normalize(45),
                   decoration: BoxDecoration(
+                    image: article.urlToImage != null
+                        ? DecorationImage(image: NetworkImage(article.urlToImage!),
+                    fit: BoxFit.cover,
+                    )
+                        :null,
                     color: Colors.grey[300],
                     borderRadius: BorderRadius.circular(
                       AppDimensions.normalize(3),
                     ),
                   ),
                 ),
+                Space.y!,
                 Text(
-                  article.publishedAt!,
+                  DateFormat('EE d, yyyy').format(
+                    DateTime.parse(
+                      article.publishedAt!,
+                    ),
+                  ),
                   style: AppText.b2,
                 ),
               ],
@@ -63,23 +73,19 @@ class ArticleCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    article.title!.length > 50
-                        ? '${article.description!.substring(0, 50)}...'
-                        : article.description!,
-                    style: AppText.h3b!.copyWith(
-                      height: 1.1,
-                    ),
+                    article.title!,
+                    style: AppText.h3b,
+                    maxLines: 2,
                   ),
                   Space.y!,
                   Text(
-                    'Name',
+                    article.source!.name!,
                     style: AppText.b2,
                   ),
                   Space.y!,
                   Text(
-                    article.description!.length > 50
-                        ? '${article.description!.substring(0, 50)}...'
-                        : article.description!,
+                    article.description!,
+                    maxLines: 3,
                   )
                 ],
               ),
