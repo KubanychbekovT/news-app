@@ -13,6 +13,8 @@ import 'package:news_app/presentation/splash/splash.dart';
 import 'package:news_app/presentation/top_stories/top_stories.dart';
 import 'package:provider/provider.dart';
 
+import 'application/providers/theme_provider.dart';
+
 void main() async {
   await Hive.initFlutter();
 
@@ -39,21 +41,40 @@ class MyApp extends StatelessWidget {
 
     return MultiProvider(
         providers: [
-          BlocProvider(create: (context) => ArticlesCubit()),
-          BlocProvider(create: (context) => TopHeadlinesCubit()),
+          BlocProvider(create: (_) => ArticlesCubit()),
+          BlocProvider(create: (_) => TopHeadlinesCubit()),
+          ChangeNotifierProvider(create: (_) => ThemeProvider()),
           ChangeNotifierProvider(create: (_) => CategoryProvider()),
         ],
-      child: MaterialApp(
-        title: 'News App',
-        debugShowCheckedModeBanner: false,
-        theme: theme.themeLight,
-        initialRoute: '/splash',
-        routes: {
-      '/splash': (context) => SplashScreen(),
-      '/dashboard': (context) => DashboardScreen(),
-      '/top-stories': (context) => TopStoriesScreen(),
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, child) {
+          return MaterialChild(
+          provider: themeProvider,
+          );
+        },
+        ),
+    );
+  }
+}
+
+class MaterialChild extends StatelessWidget {
+  final ThemeProvider provider;
+  const MaterialChild({super.key, required this.provider});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'News App',
+      themeMode: provider.isDark ? ThemeMode.dark : ThemeMode.light,
+      theme: theme.themeLight,
+      darkTheme: theme.themeDark,
+      initialRoute: '/splash',
+      routes: {
+        '/splash': (context) => const SplashScreen(),
+        '/dashboard': (context) => const DashboardScreen(),
+        '/top-stories': (context) => const TopStoriesScreen(),
       },
-      ),
     );
   }
 }

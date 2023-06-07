@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/domain/models/news.dart';
 import 'package:news_app/infrastructure/configs/app.dart';
+import 'package:news_app/infrastructure/configs/app_theme.dart';
 import 'package:news_app/infrastructure/configs/app_typography.dart';
 import 'package:news_app/infrastructure/configs/space.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -20,7 +21,7 @@ class HeadlinesCard extends StatelessWidget {
       margin: Space.all(0, 0.5),
       padding: Space.all(0.5, 1),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppTheme.c!.background,
         borderRadius: BorderRadius.circular(
           AppDimensions.normalize(3),
         ),

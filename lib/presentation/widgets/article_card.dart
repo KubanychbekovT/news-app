@@ -3,7 +3,9 @@ import 'package:hive/hive.dart';
 import 'package:news_app/domain/models/article/article.dart';
 import 'package:news_app/infrastructure/configs/app.dart';
 import 'package:news_app/infrastructure/configs/app_dimensions.dart';
+import 'package:news_app/infrastructure/configs/app_theme.dart';
 import 'package:news_app/infrastructure/configs/app_typography.dart';
+import 'package:news_app/presentation/article_content/article_content.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
 import '../../infrastructure/configs/space.dart';
@@ -19,7 +21,7 @@ class ArticleCard extends StatelessWidget {
       margin: Space.all(0, 0.5),
       padding: Space.all(0.5, 1),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppTheme.c!.background,
         borderRadius: BorderRadius.circular(
           AppDimensions.normalize(3),
         ),
@@ -33,8 +35,13 @@ class ArticleCard extends StatelessWidget {
         ],
       ),
       child: InkWell(
-        onTap: () => launchUrl(
-          Uri.parse(article.url!),
+        onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+            builder: (_) => ArticleContentScreen(
+                article: article
+            ),
+            ),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
