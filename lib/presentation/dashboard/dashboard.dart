@@ -30,7 +30,6 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final searchController = TextEditingController();
-  final themeProvider = Provider.of<ThemeProvider>(context);
 
   @override
   void initState() {
@@ -61,6 +60,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     App.init(context);
     final articleCubit = ArticlesCubit.cubit(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -204,7 +205,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     },
                     icon: const Icon(Icons.search),
                   ),
-                  onChangeFtn: (value) {
+                  onChangedFtn: (value) {
                     if (value == null || value.isEmpty) {
                       articleCubit.fetch();
                     }

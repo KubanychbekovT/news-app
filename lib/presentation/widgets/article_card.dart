@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:news_app/domain/models/article/article.dart';
@@ -36,34 +37,45 @@ class ArticleCard extends StatelessWidget {
       ),
       child: InkWell(
         onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-            builder: (_) => ArticleContentScreen(
-                article: article
-            ),
-            ),
+          context,
+          MaterialPageRoute(
+            builder: (_) => ArticleContentScreen(article: article),
+          ),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Column(
               children: [
-                Container(
-                  width: AppDimensions.normalize(45),
-                  height: AppDimensions.normalize(45),
-                  decoration: BoxDecoration(
-                    image: article.urlToImage != null
-                        ? DecorationImage(image: NetworkImage(article.urlToImage!),
-                    fit: BoxFit.cover,
-                    )
-                        :null,
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(
-                      AppDimensions.normalize(3),
-                    ),
+                if (article.urlToImage != null)
+                  SizedBox(
+                      width: AppDimensions.normalize(45),
+                      height: AppDimensions.normalize(45),
+                      child: CachedNetworkImage(
+                        imageUrl: article.urlToImage!,
+                        placeholder: (context, string) {
+                          return Center(
+                            child: Text(
+                              'News App',
+                              style: AppText.b1b!.copyWith(
+                                color: Colors.grey,
+                              ),
+                            ),
+                          );
+                        },
+                      ))
+                else
+                  SizedBox(
+                    width: AppDimensions.normalize(45),
+                    height: AppDimensions.normalize(45),
+                    child: Center(
+                        child: Text(
+                      'News App',
+                      style: AppText.b1b!.copyWith(
+                        color: Colors.grey,
+                      ),
+                    )),
                   ),
-                ),
-                Space.y!,
                 Text(
                   DateFormat('EE d, yyyy').format(
                     DateTime.parse(

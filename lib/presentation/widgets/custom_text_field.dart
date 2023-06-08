@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/infrastructure/configs/app_dimensions.dart';
 import 'package:news_app/infrastructure/configs/app_theme.dart';
-
 import '../../infrastructure/configs/app_typography.dart';
 import '../../infrastructure/configs/space.dart';
 

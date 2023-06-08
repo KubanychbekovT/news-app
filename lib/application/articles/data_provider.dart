@@ -2,11 +2,11 @@ part of 'article_cubit.dart';
 
 class ArticlesDataProvider {
   static final dio = Dio();
-  static const apiKey = Constants.apiKey;
+  static final apiKey = dotenv.env['apiKey'];
   static final cache = Hive.box('articlesbox');
   static final appCache = Hive.box('app');
 
-  static Future<List<Article>> fetch({String keyword}) async {
+  static Future<List<Article>> fetch({String? keyword}) async {
     try {
       final response = await dio.get(
         'https://newsapi.org/v2/everything?q=$keyword',
@@ -34,12 +34,12 @@ class ArticlesDataProvider {
       return articles;
     } on DioError catch (e) {
       if (DioErrorType.other == e.type) {
-        if (e.message.contains('SocketException')) {
+        if (e.message?.contains('SocketException') == true) {
           throw Exception('Poor internet connection. Please try again!');
         } else {
           throw Exception(e.message);
         }
-      }else{
+      } else {
         throw Exception('Problem connecting to the server. Please try again.');
       }
     } catch (e) {

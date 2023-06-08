@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:news_app/domain/models/news.dart';
 import 'package:news_app/presentation/constants/constants.dart';
 import 'package:hive_flutter/adapters.dart';

@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:news_app/domain/models/article/article.dart';
 import 'package:news_app/infrastructure/configs/app_typography.dart';
@@ -30,8 +31,8 @@ class ArticleContentScreen extends StatelessWidget {
                   style: AppText.h1b,
                 ),
                 Space.y!,
-                Image.network(
-                  article.urlToImage!,
+                CachedNetworkImage(
+                  imageUrl: article.urlToImage!,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
