@@ -31,7 +31,7 @@ class NewsDataProvider {
 
       return news;
     } on DioError catch (e) {
-      if (e.type == DioErrorType.other || e.type == null) {
+       if (e.type == DioErrorType.connectionTimeout || e.type == DioErrorType.receiveTimeout) {
         if (e.message?.contains('SocketException') == true) {
           throw Exception('Poor internet connection. Please try again!');
         } else {

@@ -33,7 +33,7 @@ class ArticlesDataProvider {
 
       return articles;
     } on DioError catch (e) {
-      if (DioErrorType.other == e.type) {
+      if (e.type == DioErrorType.connectionTimeout || e.type == DioErrorType.receiveTimeout) {
         if (e.message?.contains('SocketException') == true) {
           throw Exception('Poor internet connection. Please try again!');
         } else {
